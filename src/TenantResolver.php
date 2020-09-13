@@ -201,8 +201,18 @@ class TenantResolver
             throw new TenantDatabaseNameEmptyException();
         }
 
-        config()->set('database.default', $connection);
-        config()->set('database.connections.' . $connection . '.database', $databasePrefix . $databaseName);
+        // config()->set('database.default', $connection);
+        // config()->set('database.connections.' . $connection . '.database', $databasePrefix . $databaseName);
+
+        // set completed connection details of active tenants
+        config([
+            'database.default' => $connection,
+            'database.connections.' . $connection . '.host' => $activeTenant->AWSConnection,
+            'database.connections.' . $connection . '.port' => $activeTenant->AWSPort,
+            'database.connections.' . $connection . '.database' => $activeTenant->AWSDBName,
+            'database.connections.' . $connection . '.username' => $activeTenant->AWSMasterUser,
+            'database.connections.' . $connection . '.password' => $activeTenant->AWSUserPassword
+        ]);
 
         if ($hasConnection)
         {
